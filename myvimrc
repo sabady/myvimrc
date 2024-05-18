@@ -1,0 +1,105 @@
+set nocompatible
+set shell=/usr/bin/fish
+
+filetype indent plugin on
+set path+=**
+syntax on
+set autowrite
+set wildmenu
+set showcmd
+set hlsearch
+set ignorecase
+set smartcase
+set backspace=indent,eol,start
+set nostartofline
+set ruler
+set laststatus=2
+set confirm
+set visualbell
+set t_vb=
+set mouse=r
+"set cmdheight=3
+set number
+set tabpagemax=100
+set shiftwidth=4
+set softtabstop=4
+set tabstop=4
+set expandtab
+set autochdir
+let NERDTreeChDirMode=2
+set updatetime=100
+nnoremap <leader>n :NERDTree .<CR>
+nnoremap <silent> , <zc> :foldclose<CR>
+
+" FILE BROWSING
+let g:netrw_banner=0
+let g:netrw_browse_split=4
+let g:netrw_altv=1
+let g:netrw_liststyle=0
+let g:netrw_list_hide=netrw_gitignore#Hide()
+let g:netrw_list_hide.=',\(^\|\s\s\)\zs\.\S\+'
+
+let g:terraform_align=1
+let g:terraform_fold_sections=1
+let g:terraform_fmt_on_save=1
+
+let g:go_highlight_fields = 1
+let g:go_highlight_functions = 1
+let g:go_highlight_function_calls = 1
+let g:go_highlight_extra_types = 1
+let g:go_highlight_operators = 1
+
+let g:go_fmt_autosave = 1
+let g:go_fmt_command = "goimports"
+
+"Status line types/signatures
+let g:go_auto_type_info = 1
+
+"Run :GoBuild or :GoTestCompile based on the go file
+function! s:build_go_files()
+  let l:file = expand('%')
+  if l:file =~# '^\f\+_test\.go$'
+    call go#test#Test(0, 1)
+  elseif l:file =~# '^\f\+\.go$'
+    call go#cmd#Build(0)
+  endif
+endfunction
+
+au filetype go inoremap <buffer> . .<C-x><C-o>
+
+autocmd FileType go nmap <leader>b :<C-u>call <SID>build_go_files()<CR>
+autocmd FileType go nmap <leader>r  <Plug>(go-run)
+autocmd FileType go nmap <leader>t  <Plug>(go-test)
+autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
+"autocmd VimEnter * NERDTree
+"autocmd BufWinEnter * NERDTreeMirror
+"autocmd VimEnter * wincmd w
+
+"map <C-t> :NERDTreeToggle<CR> “ Toggle side window with `CTRL+t`.
+map <C-t> :NERDTreeTabsToggle<CR> “ Toggle side window with `CTRL+t`
+
+let g:NERDTreeDirArrowExpandable = '▸'
+let g:NERDTreeDirArrowCollapsible = '▾'
+let NERDTreeShowHidden=1 
+
+inoremap <expr> <Right> pumvisible() ? "<C-y>" :"<Right>"
+inoremap <expr> <CR> pumvisible() ? "<C-y>" :"<CR>"
+inoremap <expr> <Tab> pumvisible() ? "<C-y>" :"<Tab>"
+
+call plug#begin('~/.vim/plugged')
+Plug 'https://github.com/rust-lang/rust.vim'
+Plug 'https://github.com/Yggdroot/indentLine.git'
+Plug 'https://github.com/hashivim/vim-terraform.git'
+Plug 'https://github.com/itchyny/lightline.vim.git'
+Plug 'https://github.com/tpope/vim-eunuch.git'
+Plug 'https://github.com/tpope/vim-fugitive.git'
+Plug 'jiangmiao/auto-pairs'
+Plug 'elzr/vim-json'
+Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
+Plug 'preservim/nerdtree'
+Plug 'https://github.com/airblade/vim-gitgutter.git'
+Plug 'https://github.com/ekalinin/Dockerfile.vim.git'
+Plug 'chr4/nginx.vim'
+Plug 'vim-scripts/AutoComplPop'
+Plug 'https://github.com/jistr/vim-nerdtree-tabs.git'
+call plug#end()
